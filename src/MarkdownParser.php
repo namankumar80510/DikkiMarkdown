@@ -1,0 +1,98 @@
+<?php
+
+namespace Dikki\Markdown;
+
+use League\CommonMark\Exception\CommonMarkException;
+use Nette\Utils\FileSystem as FS;
+use Nette\Utils\Finder;
+
+/**
+ * MarkdownParser
+ *
+ * You can provide the path to a markdown content file.
+ * It will return the contents of the file as html and the front matter as an array.
+ *
+ * @package Dikki\Markdown
+ */
+class MarkdownParser
+{
+
+    private CommonMark $commonMark;
+
+    /**
+     * @param string $path
+     */
+    public function __construct(
+        private string $path
+    )
+    {
+        $this->path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->commonMark = new CommonMark();
+    }
+
+    /**
+     * @param string $fileLocation
+     * @param array $replaceArr
+     * @return array|null
+     * @throws CommonMarkException
+     */
+    public function getFileContent(string $fileLocation, array $replaceArr = []): ?array
+    {
+
+        $file = $this->path . $fileLocation . '.md';
+
+        if (!file_exists($file)) {
+            $file = $this->path . $fileLocation . '/index.md';
+
+            if (!file_exists($file)) {
+                return null;
+            }
+        }
+
+        $file = FS::read($file);
+
+        $file = $this->commonMark->convertToHtml($file);
+
+        if (isset($file['meta']['published']) && $file['meta']['published'] === false) {
+            return null;
+        }
+
+        if (!empty($replaceArr))
+        {
+            foreach ($replaceArr as $itemToReplace => $replaceWith)
+            {
+                $file = str_replace($itemToReplace, $replaceWith, $file);
+            }
+        }
+
+        return $file;
+    }
+
+    /**
+     * @param string $folderLocation
+     * @return array|null
+     * @throws CommonMarkException
+     */
+    public function getFolderFiles(string $folderLocation): ?array
+    {
+        $folder = $this->path . $folderLocation;
+
+        if (!file_exists($folder)) {
+            return null;
+        }
+
+        $files = Finder::findFiles('*.md')->in($folder);
+
+        $filesArray = [];
+        // foreach
+        foreach ($files as $file) {
+            $file = FS::read($file);
+            $file = $this->commonMark->convertToHtml($file);
+
+            $filesArray[] = $file;
+        }
+
+        return $filesArray;
+    }
+
+}

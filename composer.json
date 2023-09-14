@@ -1,0 +1,25 @@
+{
+    "name": "dikki/markdown",
+    "description": "Write and Parse Markdown Content for Your Websites",
+    "keywords": ["markdown", "parser", "html", "php", "markdown-parser", "markdown-to-html", "markdown-to-html-converter", "markdown-to-html-parser", "markdown-to-html-renderer", "markdown-to-html-render", "markdown-to-html-rendering", "markdown-to-html-rendering-engine", "markdown-to-html-rendering-library", "markdown-to-html-rendering-tool", "markdown-to-html-rendering-toolkit", "markdown-to-html-rendering-utility", "markdown-to-html-rendering-module", "markdown-to-html-rendering-package", "markdown-to-html-rendering-script", "markdown-to-html-rendering-program", "markdown-to-html-rendering-application", "markdown-to-html-rendering-software", "markdown-to-html-rendering-system", "markdown-to-html-rendering-framework", "markdown-to-html-rendering-library", "markdown-to-html-rendering-toolkit", "markdown-to-html-rendering-utility", "markdown-to-html-rendering-module", "markdown-to-html-rendering-package", "markdown-to-html-rendering-script", "markdown-to-html-rendering-program", "markdown-to-html-rendering-application", "markdown-to-html-rendering-software", "markdown-to-html-rendering-system", "markdown-to-html-rendering-framework", "markdown-to-html-rendering-library", "markdown-to-html-rendering-toolkit", "markdown-to-html-rendering-utility", "markdown-to-html-rendering-module", "markdown-to-html-rendering-package", "markdown-to-html-rendering-script", "markdown-to-html-rendering-program", "markdown-to-html-rendering-application", "markdown-to-html-rendering-software", "markdown-to-html-rendering-system", "markdown-to-html-rendering-framework"],
+    "homepage": "https://dikki.website/components/markdown",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Naman Kumar",
+            "email": "namankumar80510@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "8.0 - 8.3",
+        "league/commonmark": "^2.4",
+        "league/html-to-markdown": "^5.1",
+        "nette/utils": "^4.0",
+        "symfony/yaml": "^6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dikki\\Markdown\\": "src/"
+        }
+    }
+}
