@@ -15,7 +15,7 @@
         "league/commonmark": "^2.5",
         "league/html-to-markdown": "^5.1",
         "nette/utils": "^4.0",
-        "symfony/yaml": "^7.1"
+        "symfony/yaml": "*"
     },
     "autoload": {
         "psr-4": {
