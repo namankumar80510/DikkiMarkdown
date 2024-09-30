@@ -3,7 +3,7 @@
 namespace Dikki\Markdown;
 
 use League\CommonMark\Exception\CommonMarkException;
-use Nette\Utils\FileSystem as FS;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 
 /**
@@ -38,34 +38,13 @@ class MarkdownParser
      */
     public function getFileContent(string $fileLocation, array $replaceArr = []): ?array
     {
-
-        $file = $this->path . $fileLocation . '.md';
-
-        if (!file_exists($file)) {
-            $file = $this->path . $fileLocation . '/index.md';
-
-            if (!file_exists($file)) {
-                return null;
-            }
-        }
-
-        $file = FS::read($file);
-
-        $file = $this->commonMark->convertToHtml($file);
-
-        if (isset($file['meta']['published']) && $file['meta']['published'] === false) {
+        $file = $this->findFile($fileLocation);
+        if (!$file) {
             return null;
         }
 
-        if (!empty($replaceArr))
-        {
-            foreach ($replaceArr as $itemToReplace => $replaceWith)
-            {
-                $file = str_replace($itemToReplace, $replaceWith, $file);
-            }
-        }
-
-        return $file;
+        $content = $this->parseFile($file, $replaceArr);
+        return $content['meta']['published'] ?? true ? $content : null;
     }
 
     /**
@@ -76,23 +55,40 @@ class MarkdownParser
     public function getFolderFiles(string $folderLocation): ?array
     {
         $folder = $this->path . $folderLocation;
-
-        if (!file_exists($folder)) {
+        if (!is_dir($folder)) {
             return null;
         }
 
         $files = Finder::findFiles('*.md')->in($folder);
+        return array_map([$this, 'parseFile'], iterator_to_array($files));
+    }
 
-        $filesArray = [];
-        // foreach
-        foreach ($files as $file) {
-            $file = FS::read($file);
-            $file = $this->commonMark->convertToHtml($file);
+    private function findFile(string $fileLocation): ?string
+    {
+        $filePaths = [
+            $this->path . $fileLocation . '.md',
+            $this->path . $fileLocation . '/index.md',
+        ];
 
-            $filesArray[] = $file;
+        foreach ($filePaths as $filePath) {
+            if (file_exists($filePath)) {
+                return $filePath;
+            }
         }
 
-        return $filesArray;
+        return null;
+    }
+
+    private function parseFile(string $file, array $replaceArr = []): array
+    {
+        $content = FileSystem::read($file);
+        $parsed = $this->commonMark->convertToHtml($content);
+
+        if (!empty($replaceArr)) {
+            $parsed['content'] = strtr($parsed['content'], $replaceArr);
+        }
+
+        return $parsed;
     }
 
 }

@@ -12,6 +12,12 @@ use League\HTMLToMarkdown\HtmlConverter;
  **/
 class HtmlToMdConverter
 {
+    private HtmlConverter $converter;
+
+    public function __construct()
+    {
+        $this->converter = new HtmlConverter(['header_style' => 'atx']);
+    }
 
     /**
      * @param $html
@@ -19,7 +25,6 @@ class HtmlToMdConverter
      */
     public function convert($html): string
     {
-        $converter = new HtmlConverter(array('header_style' => 'atx'));
-        return $converter->convert($html);
+        return $this->converter->convert($html);
     }
 }
